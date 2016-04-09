@@ -3,7 +3,10 @@ package com.example.omer.booktinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
     Book currentBook;
 
-    @Bind(R.id.mainTextView) TextView mainTextView;
+    @Bind(R.id.bookTitle) TextView bookTitle;
+    @Bind(R.id.bookImage) ImageView bookImage;
+    @Bind(R.id.bookDescription) TextView bookDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +79,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setBookDisplay() {
-        mainTextView.setText(currentBook.getTitle());
+        bookTitle.setText(currentBook.getTitle());
+        Picasso.with(this).load(currentBook.getImg()).into(bookImage);
+        bookDescription.setText(currentBook.getDescription());
     }
 
     private Book getCurrentBook(Response response) throws IOException, JSONException {
         JSONArray responseArray = new JSONArray(response.body().string());
         JSONObject responseJson = responseArray.getJSONObject(0);
+        Log.v(TAG, responseJson.toString());
         return new Book(responseJson.getString("_id"),
                         responseJson.getString("title"),
                         responseJson.getString("author"),
